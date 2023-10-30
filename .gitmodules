@@ -1,0 +1,3 @@
+[submodule "lua4dec"]
+	path = lua4dec
+	url = https://github.com/styinx/lua4dec
