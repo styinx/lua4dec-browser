@@ -1,4 +1,4 @@
-# cmake -DVCPKG_MANIFEST_INSTALL:PATH="C:/Libs/vcpkg/installed" -DDIR_VCPKG_ROOT:PATH="C:/Libs/vcpkg/" -DVCPKG_TARGET_TRIPLET:STRING="windows-x64-static" -DCMAKE_TOOLCHAIN_FILE:PATH="C:/Libs/vcpkg/scripts/buildsystems/vcpkg.cmake" -Wno-dev
+# cmake -DVCPKG_MANIFEST_INSTALL:PATH="C:/Libs/vcpkg/installed" -DDIR_VCPKG_ROOT:PATH="C:/Libs/vcpkg/" -DVCPKG_TARGET_TRIPLET:STRING="x64-windows-static" -DCMAKE_TOOLCHAIN_FILE:PATH="C:/Libs/vcpkg/scripts/buildsystems/vcpkg.cmake" -Wno-dev
 
 project(lua4dec-browser)
 
