@@ -79,7 +79,7 @@ add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
 # Dependencies"
 
-SET(wxWidgets_USE_LIBS base core propgrid stc)
+SET(wxWidgets_USE_LIBS base core propgrid stc scintilla)
 SET(wxWidgets_FIND_COMPONENTS true)
 find_package(wxWidgets REQUIRED)
 
@@ -140,5 +140,5 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set_target_properties(Main PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
     set_target_properties(Main PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif ()
-target_link_libraries(Main PRIVATE ${wxWidgets_LIBRARIES} wxscintilla)
+target_link_libraries(Main PRIVATE ${wxWidgets_LIBRARIES} lua4dec)
 

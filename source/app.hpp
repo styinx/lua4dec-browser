@@ -1,6 +1,8 @@
 #ifndef LUA4DEC_BROWSER_APP_HPP
 #define LUA4DEC_BROWSER_APP_HPP
 
+#include "lua4dec.hpp"
+
 #include <wx/app.h>
 #include <wx/frame.h>
 #include <wx/propgrid/propgrid.h>
@@ -17,6 +19,23 @@ private:
     wxTreeCtrl*       m_tree    = nullptr;
     wxPropertyGrid*   m_grid    = nullptr;
     wxStyledTextCtrl* m_editor  = nullptr;
+
+    Ast* m_ast = nullptr;
+
+    void BuildTree(Ast* ast, wxTreeItemId id);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, Assignment);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, Call);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, Condition);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, ForLoop);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, ForInLoop);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, LocalAssignment);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, Return);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, TailCall);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, WhileLoop);
+    void         FillEditor(Ast* ast);
+    void         AddText(const wxString&);
+    //void         AddText(Assignment);
+    //void         AddText(Call);
 
 public:
     App() = default;

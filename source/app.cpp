@@ -1,5 +1,4 @@
 #include "app.hpp"
-#include "parser/parser.hpp"
 
 #include <wx/dir.h>
 #include <wx/statline.h>
@@ -7,6 +6,105 @@
 App::App(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxApp()
 {
+}
+
+void App::BuildTree(Ast* ast, wxTreeItemId id)
+{
+    for(const auto& element : ast->statements)
+    {
+        std::visit(
+            [this, &id](auto&& s)
+            { AppendTreeItem(id, s); },
+            element);
+    }
+
+    if(ast->child)
+    {
+        wxTreeItemId child = m_tree->AppendItem(id, "child");
+        BuildTree(ast->child, child);
+    }
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, Assignment ass)
+{
+    auto child = m_tree->AppendItem(parent, "Assignment");
+    m_tree->AppendItem(child, ass.left.name);
+    m_tree->AppendItem(child, "Expression");
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, Call call)
+{
+    auto child = m_tree->AppendItem(parent, "Call");
+    m_tree->AppendItem(child, call.name.name);
+    for(const auto& arg : call.arguments)
+    {
+        m_tree->AppendItem(child, "Expression");
+    }
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, Condition condition)
+{
+    auto child = m_tree->AppendItem(parent, "Condition");
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, ForLoop loop)
+{
+    auto child = m_tree->AppendItem(parent, "ForLoop");
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, ForInLoop loop)
+{
+    auto child = m_tree->AppendItem(parent, "ForInLoop");
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, LocalAssignment ass)
+{
+    auto child = m_tree->AppendItem(parent, "LocalAssignment");
+    m_tree->AppendItem(child, ass.left.name);
+    m_tree->AppendItem(child, "Expression");
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, Return ret)
+{
+    auto child = m_tree->AppendItem(parent, "Return");
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, TailCall call)
+{
+    auto child = m_tree->AppendItem(parent, "TailCall");
+    m_tree->AppendItem(child, call.name.name);
+    for(const auto& arg : call.arguments)
+    {
+        m_tree->AppendItem(child, "Expression");
+    }
+    return child;
+}
+
+wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, WhileLoop loop)
+{
+    auto child = m_tree->AppendItem(parent, "WhileLoop");
+    return child;
+}
+
+void App::FillEditor(Ast* ast)
+{
+    for(const auto& element : ast->statements)
+    {
+        //std::visit([this](auto&& s) { AddText(s); }, element);
+        AddText("text");
+    }
+}
+
+void App::AddText(const wxString& t)
+{
+    m_editor->AddText(t);
 }
 
 bool App::OnInit()
@@ -35,17 +133,18 @@ void App::CreateLayout()
     m_columns = new wxBoxSizer(wxHORIZONTAL);
 
     m_tree = new wxTreeCtrl(m_window, wxID_ANY);
-    m_tree->SetWindowStyle(m_tree->GetWindowStyle() | wxBORDER_NONE);
+    // m_tree->SetWindowStyle(m_tree->GetWindowStyle() | wxBORDER_NONE);
 
     m_grid = new wxPropertyGrid(m_window, wxID_ANY);
-    m_grid->SetWindowStyle(m_grid->GetWindowStyle() | wxBORDER_NONE);
+    // m_grid->SetWindowStyle(m_grid->GetWindowStyle() | wxBORDER_NONE);
+
     wxArrayString choices;
     choices.Add("INT");
     choices.Add("FLOAT");
     m_grid->Append(new wxEnumProperty("Type", wxPG_LABEL, choices));
 
     m_editor = new wxStyledTextCtrl(m_window, wxID_ANY);
-    m_editor->SetWindowStyle(m_editor->GetWindowStyle() | wxBORDER_NONE);
+    // m_editor->SetWindowStyle(m_editor->GetWindowStyle() | wxBORDER_NONE);
     m_editor->SetCaretStyle(wxSTC_CARETSTYLE_INVISIBLE);
 
     m_left->Add(m_tree, 1, wxEXPAND);
@@ -62,14 +161,18 @@ void App::OnDropFiles(wxDropFilesEvent& event)
 {
     if(event.GetNumberOfFiles() > 0)
     {
+        delete m_ast;
+        m_tree->DeleteAllItems();
+        m_editor->ClearAll();
+
         wxString filename = event.GetFiles()[0];
 
         wxTreeItemId root_id = m_tree->AddRoot(filename);
-        m_tree->AppendItem(root_id, "Test");
 
-        Collection<byte> buffer;
-        auto*            iter = buffer.data();
+        m_ast = new Ast();
+        create_ast(m_ast, filename.c_str());
 
-        auto chunk = read_chunk(iter);
+        BuildTree(m_ast, root_id);
+        FillEditor(m_ast);
     }
 }
