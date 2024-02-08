@@ -22,7 +22,7 @@ private:
 
     Ast* m_ast = nullptr;
 
-    void BuildTree(Ast* ast, wxTreeItemId id);
+    void         BuildTree(Ast* ast, wxTreeItemId id);
     wxTreeItemId AppendTreeItem(wxTreeItemId, Assignment);
     wxTreeItemId AppendTreeItem(wxTreeItemId, Call);
     wxTreeItemId AppendTreeItem(wxTreeItemId, Condition);
@@ -33,9 +33,15 @@ private:
     wxTreeItemId AppendTreeItem(wxTreeItemId, TailCall);
     wxTreeItemId AppendTreeItem(wxTreeItemId, WhileLoop);
     void         FillEditor(Ast* ast);
-    void         AddText(const wxString&);
-    //void         AddText(Assignment);
-    //void         AddText(Call);
+    void         AddText(Assignment); /*
+     void         AddText(Call);
+     void         AddText(Condition);
+     void         AddText(ForLoop);
+     void         AddText(ForInLoop);
+     void         AddText(LocalAssignment);
+     void         AddText(Return);
+     void         AddText(TailCall);
+     void         AddText(WhileLoop);*/
 
 public:
     App() = default;

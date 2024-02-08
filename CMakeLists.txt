@@ -4,25 +4,6 @@ project(lua4dec-browser)
 
 cmake_minimum_required(VERSION 3.21)
 
-#
-# Functions
-#
-
-# 'message' wrapper
-function(print what)
-    message("   ${what}")
-endfunction()
-
-
-FUNCTION(DEBUG_WX_LIBS var)
-    SET(liblist "")
-    FOREACH (f ${var})
-        STRING(REGEX REPLACE "${DIR_VCPKG_LIBRARY}/wx(.*)u(.*)\\.lib" "${DIR_VCPKG_LIBRARY_DEBUG}/wx\\1ud\\2.lib" f ${f})
-        LIST(APPEND liblist "${f}")
-    ENDFOREACH ()
-    SET(wxWidgets_LIBRARIES "${liblist}" PARENT_SCOPE)
-ENDFUNCTION()
-
 
 #
 # Paths
@@ -83,11 +64,6 @@ SET(wxWidgets_USE_LIBS base core propgrid stc scintilla)
 SET(wxWidgets_FIND_COMPONENTS true)
 find_package(wxWidgets REQUIRED)
 
-IF ("${CMAKE_BUILD_TYPE}" MATCHES "Debug")
-    DEBUG_WX_LIBS("${wxWidgets_LIBRARIES}")
-ELSE ()
-ENDIF ()
-
 
 # Local Dependencies
 
@@ -102,19 +78,14 @@ set(INCLUDE_DIRECTORIES
 
         lua4dec/source/
 
-        ${DIR_VCPKG_INCLUDE})
+        ${DIR_VCPKG_INCLUDE}
+)
 
 include_directories(${INCLUDE_DIRECTORIES})
 
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
-    set(LIBRARY_DIRECTORIES
-            ${DIR_VCPKG_LIBRARY}
-            ${DIR_VCPKG_LIBRARY}/deb)
-else()
-    set(LIBRARY_DIRECTORIES
-            ${DIR_VCPKG_LIBRARY}
-            ${DIR_VCPKG_LIBRARY}/rel)
-endif()
+set(LIBRARY_DIRECTORIES
+        ${DIR_VCPKG_LIBRARY}
+)
 
 link_directories(${LIBRARY_DIRECTORIES})
 
@@ -128,7 +99,8 @@ set(SOURCES
 source_group("source"         FILES
     source/main.cpp
     source/app.hpp
-    source/app.cpp)
+    source/app.cpp
+)
 
 
 

@@ -12,10 +12,7 @@ void App::BuildTree(Ast* ast, wxTreeItemId id)
 {
     for(const auto& element : ast->statements)
     {
-        std::visit(
-            [this, &id](auto&& s)
-            { AppendTreeItem(id, s); },
-            element);
+        std::visit([this, &id](auto&& s) { AppendTreeItem(id, s); }, element);
     }
 
     if(ast->child)
@@ -95,16 +92,19 @@ wxTreeItemId App::AppendTreeItem(wxTreeItemId parent, WhileLoop loop)
 
 void App::FillEditor(Ast* ast)
 {
+    StringBuffer buffer;
+    print_ast(ast, buffer);
+
+    m_editor->AddText(wxString(buffer.str()));
+
     for(const auto& element : ast->statements)
     {
-        //std::visit([this](auto&& s) { AddText(s); }, element);
-        AddText("text");
     }
 }
 
-void App::AddText(const wxString& t)
+void App::AddText(Assignment ass)
 {
-    m_editor->AddText(t);
+    m_editor->AddText(ass.left.name);
 }
 
 bool App::OnInit()
