@@ -7,22 +7,34 @@
 #include <wx/frame.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/stc/stc.h>
 #include <wx/treectrl.h>
 
 class App : public wxApp
 {
 private:
-    wxFrame*          m_window  = nullptr;
-    wxBoxSizer*       m_left    = nullptr;
-    wxBoxSizer*       m_columns = nullptr;
-    wxTreeCtrl*       m_tree    = nullptr;
-    wxPropertyGrid*   m_grid    = nullptr;
-    wxStyledTextCtrl* m_editor  = nullptr;
+    wxFrame*          m_window    = nullptr;
+    wxBoxSizer*       m_left      = nullptr;
+    wxBoxSizer*       m_columns   = nullptr;
+    wxStaticText*     m_drop_hint = nullptr;
+    wxTreeCtrl*       m_tree      = nullptr;
+    wxPropertyGrid*   m_grid      = nullptr;
+    wxStyledTextCtrl* m_editor    = nullptr;
 
     Ast* m_ast = nullptr;
 
     void         BuildTree(Ast* ast, wxTreeItemId id);
+    void         AppendTreeItems(wxTreeItemId, Vector<Statement>);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, Closure);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, Identifier);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstInt);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstList);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstMap);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstNumber);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstOperation);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstString);
+    wxTreeItemId AppendTreeItem(wxTreeItemId, AstTable);
     wxTreeItemId AppendTreeItem(wxTreeItemId, Assignment);
     wxTreeItemId AppendTreeItem(wxTreeItemId, Call);
     wxTreeItemId AppendTreeItem(wxTreeItemId, Condition);
